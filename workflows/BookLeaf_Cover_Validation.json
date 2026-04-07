@@ -1,0 +1,1116 @@
+{
+  "name": "BookLeaf_Cover_Validation",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "1LlhCldi2QcySiQfUNVNrdBEPqNxx8_-f",
+          "mode": "list",
+          "cachedResultName": "BookLeaf-Cover-Submissions",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1LlhCldi2QcySiQfUNVNrdBEPqNxx8_-f"
+        },
+        "event": "fileCreated",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        -640,
+        -144
+      ],
+      "id": "f5799d8f-5a04-468e-a496-c16d79a30271",
+      "name": "Google Drive Trigger",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "cczv2ScIXLy016WK",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Lookup Author Email').first().json.fields.Email }}",
+        "subject": "=✅ Your Book Cover Has Been Approved — {{ $('Parse Vision Response').first().json.book_title }}",
+        "emailType": "text",
+        "message": "=Hi {{ $('Parse Vision Response').first().json.author_name }},\n\nGreat news! Your book cover for \"{{ $('Parse Vision Response').first().json.book_title }}\" (ISBN: {{ $('Parse Vision Response').first().json.isbn }}) has passed our automated quality review.\n\n✅ Badge Overlap Check: PASSED\n✅ Safe Margin Check: PASSED  \n✅ Text Legibility: PASSED\n✅ Image Quality: PASSED\n\nConfidence Score: {{ $('Parse Vision Response').item.json.overall_confidence }}%\n\nYour cover meets all our publishing standards and will proceed to the next stage of production. No further action is needed from your end.\n\nIf you have any questions, feel free to reach out to us at support@bookleafpub.com.\n\nWarm regards,\nBookLeaf Publishing Team",
+        "options": {
+          "appendAttribution": "={{ false }}",
+          "senderName": "BookLeaf Publishing"
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1936,
+        -160
+      ],
+      "id": "ab61cd92-7a60-4d06-a006-42dcc1bc2ca1",
+      "name": "PASS template",
+      "webhookId": "593b2484-8749-4bc8-a7ad-9515dfa3da25",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "zsyVReP9VjRQbc2m",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Lookup Author Email').first().json.fields.Email }}",
+        "subject": "=⚠️ Your Book Cover Needs Adjustments — {{ $json.fields['Book Title'] }}",
+        "emailType": "text",
+        "message": "=Hi {{ $('Parse Vision Response').first().json.author_name }},\n\nThank you for submitting your cover for \"{{ $('Parse Vision Response').first().json.book_title }}\" (ISBN: {{ $('Parse Vision Response').first().json.isbn }}). Our review identified a few issues:\n\n📋 Issues Detected:\n{{ $('Parse Vision Response').first().json.issue_markers }}\n\n🔧 How to Fix:\n{{ $('Parse Vision Response').first().json.correction_instructions }}\n\n📅 Next Steps:\n1. Log in to your dashboard at dashboard.bookleafpub.in\n2. Go to Cover Design section\n3. Make the adjustments listed above\n4. Re-upload your corrected cover\n\nPlease resubmit within 5 business days.\n\nNeed help? Contact us at support@bookleafpub.com.\n\nWarm regards,\nBookLeaf Publishing Team",
+        "options": {
+          "appendAttribution": "={{ false }}",
+          "senderName": "BookLeaf Publishing"
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1952,
+        112
+      ],
+      "id": "3471b304-ac70-44d4-b7af-89f313b907f5",
+      "name": "REVIEW NEEDED template",
+      "webhookId": "593b2484-8749-4bc8-a7ad-9515dfa3da25",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "zsyVReP9VjRQbc2m",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Google Drive Trigger').item.json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -64,
+        -128
+      ],
+      "id": "994f73ef-405c-4bd8-802c-5522a764cc41",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "cczv2ScIXLy016WK",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const fileName = $json.name; // e.g., \"1234567890123_text.pdf\"\nconst fileId = $json.id;\nconst mimeType = $json.mimeType;\n\n// Extract ISBN from filename\nconst isbn = fileName.split('_')[0];\nconst fileExtension = fileName.split('.').pop().toLowerCase();\nconst isPdf = fileExtension === 'pdf';\n\nreturn [{\n  json: {\n    isbn: isbn,\n    fileName: fileName,\n    fileId: fileId,\n    mimeType: mimeType,\n    isPdf: isPdf,\n    fileExtension: fileExtension,\n    uploadTimestamp: new Date().toISOString()\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -240,
+        -128
+      ],
+      "id": "d4625cdb-f6a6-4db6-bd13-f85f405a2e47",
+      "name": "Extract ISBN & Metadata"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Analyze book cover images to detect layout and quality issues.",
+        "hasOutputParser": true,
+        "needsFallback": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=You are a book cover quality inspector for BookLeaf Publishing.\n\nCOVER LAYOUT REFERENCE:\nThe cover has TWO sides — Front Cover (right side) and Back Cover (left side), with a thin spine in the middle.\n\nFRONT COVER SAFE AREA RULES:\n- There must be a clear margin of approximately 3mm from the LEFT, RIGHT, and TOP edges. No text or important elements should touch or be very close to these edges.\n- The BOTTOM approximately 9mm (roughly the bottom 4-5% of the cover height) is RESERVED for the \"Winner of 21st Century Emily Dickinson Award\" badge. NO text, author name, title, or any design element should appear in this bottom strip.\n- The author name is typically placed at the top of the front cover, well within the safe area.\n- The book title can be placed in the middle or lower portion, but must stay ABOVE the bottom badge zone.\n\nBACK COVER RULES:\n- Should have proper margins on all sides\n- \"About the Book\" text at the top should not touch the top edge\n- \"About the Author\" section should be properly spaced\n- BookLeaf Publishing logo typically appears at the bottom left\n\nCRITICAL CHECK (highest priority):\n1. BADGE OVERLAP: Look at the very bottom strip of the FRONT COVER. \n   - The text \"Winner of 21st Century Emily Dickinson Award\" or similar award text BELONGS in the bottom zone — this is the badge itself. Do NOT flag this as an overlap.\n   - What you ARE checking: does the AUTHOR NAME, BOOK TITLE, SUBTITLE, or any OTHER text or design element intrude into this bottom badge zone?\n   - If only the award badge text is in the bottom zone, this is a PASS.\n   - If the author name, title, or other text overlaps or is too close to the award badge text, this is a FAIL.\n   - If the image shows ONLY the front cover (no back cover or spine visible), skip the back_cover_layout and text_border_spacing checks — mark them as PASS with description \"Back cover not visible in image\" and severity \"none\".\n   - Short taglines or subtitles (e.g., \"I Live and Write My Living\", \"Poems of Memory\") positioned ABOVE the author name and ABOVE the badge text are acceptable — do not flag these unless they actually enter the bottom 5% badge zone.\nSEVERITY RULES:\n   - \"critical\" — ONLY for badge overlap violations (text intruding into bottom badge zone)\n   - \"minor\" — for margin violations, spacing issues, slight alignment problems\n   - \"none\" — check passed cleanly\n\nDo NOT mark safe margin or text spacing issues as \"critical\". These are \"minor\" issues that need review but are not showstoppers.\n\nADDITIONAL CHECKS:\n2. SAFE MARGIN VIOLATIONS: Is any text within ~3mm of the left, right, or top edges of the front cover?\n3. TEXT-TO-BORDER SPACING: On the back cover, is text too close to any edge?\n4. TEXT LEGIBILITY: Is all text clearly readable with no pixelation or blur?\n5. IMAGE QUALITY: Is the overall image clear, high-resolution, and professional?\n6. TEXT ALIGNMENT: Is text properly aligned and not crooked or misaligned?\n7. BACK COVER LAYOUT: Is the back cover text (About the Book, About the Author) properly formatted and within margins?\n\nRESPOND IN THIS EXACT JSON FORMAT:\n{\n  \"overall_status\": \"PASS\" or \"REVIEW_NEEDED\",\n  \"overall_confidence\": 0-100,\n  \"checks\": {\n    \"badge_overlap\": {\n      \"status\": \"PASS\" or \"FAIL\",\n      \"confidence\": 0-100,\n      \"description\": \"Brief description of finding\",\n      \"severity\": \"critical\" or \"minor\" or \"none\"\n    },\n    \"safe_margin\": {\n      \"status\": \"PASS\" or \"FAIL\",\n      \"confidence\": 0-100,\n      \"description\": \"Brief description\",\n      \"severity\": \"critical\" or \"minor\" or \"none\"\n    },\n    \"text_border_spacing\": {\n      \"status\": \"PASS\" or \"FAIL\",\n      \"confidence\": 0-100,\n      \"description\": \"Brief description\",\n      \"severity\": \"critical\" or \"minor\" or \"none\"\n    },\n    \"text_legibility\": {\n      \"status\": \"PASS\" or \"FAIL\",\n      \"confidence\": 0-100,\n      \"description\": \"Brief description\",\n      \"severity\": \"critical\" or \"minor\" or \"none\"\n    },\n    \"image_quality\": {\n      \"status\": \"PASS\" or \"FAIL\",\n      \"confidence\": 0-100,\n      \"description\": \"Brief description\",\n      \"severity\": \"critical\" or \"minor\" or \"none\"\n    },\n    \"text_alignment\": {\n      \"status\": \"PASS\" or \"FAIL\",\n      \"confidence\": 0-100,\n      \"description\": \"Brief description\",\n      \"severity\": \"critical\" or \"minor\" or \"none\"\n    },\n    \"back_cover_layout\": {\n      \"status\": \"PASS\" or \"FAIL\",\n      \"confidence\": 0-100,\n      \"description\": \"Brief description\",\n      \"severity\": \"critical\" or \"minor\" or \"none\"\n    }\n  },\n  \"author_name_detected\": \"Name found on cover or null\",\n  \"author_name_position\": \"top/middle/bottom/bottom-edge\",\n  \"title_detected\": \"Book title found or null\",\n  \"issues_summary\": [\"List of specific issues found\"],\n  \"correction_instructions\": [\"Step-by-step fix instructions for each issue\"]\n}\n\nIMPORTANT:\n- If ANY check has severity \"critical\", overall_status MUST be \"REVIEW_NEEDED\"\n- If all checks pass with severity \"none\", overall_status is \"PASS\"\n- If only \"minor\" issues exist, overall_status is \"REVIEW_NEEDED\" but note they are minor\n- Be especially strict about badge overlap — this is the #1 issue BookLeaf faces\n- The cover image may show front cover only, or front + back + spine together. Analyze whatever is visible."
+            },
+            {
+              "type": "HumanMessagePromptTemplate",
+              "messageType": "imageBinary"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        640,
+        -144
+      ],
+      "id": "01bfa903-b75f-4736-98ba-dfc1d2843146",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "gpt-4o"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        736,
+        112
+      ],
+      "id": "76f3fa86-1f5a-44e0-8eac-209c4f32a386",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "r6DgVlzLKWp2CCM2",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash-image",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        576,
+        112
+      ],
+      "id": "3c3373d7-274a-446f-9f2c-f32278aead9f",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "wAyPkSP39llwv7ZP",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"overall_status\": \"PASS\",\n  \"overall_confidence\": 85,\n  \"checks\": {\n    \"badge_overlap\": {\n      \"status\": \"PASS\",\n      \"confidence\": 90,\n      \"description\": \"No badge overlap detected\",\n      \"severity\": \"none\"\n    },\n    \"safe_margin\": {\n      \"status\": \"PASS\",\n      \"confidence\": 88,\n      \"description\": \"All elements within safe margins\",\n      \"severity\": \"none\"\n    },\n    \"text_border_spacing\": {\n      \"status\": \"PASS\",\n      \"confidence\": 87,\n      \"description\": \"Adequate spacing from borders\",\n      \"severity\": \"none\"\n    },\n    \"text_legibility\": {\n      \"status\": \"PASS\",\n      \"confidence\": 92,\n      \"description\": \"Text is clearly readable\",\n      \"severity\": \"none\"\n    },\n    \"image_quality\": {\n      \"status\": \"PASS\",\n      \"confidence\": 89,\n      \"description\": \"Image resolution is sufficient\",\n      \"severity\": \"none\"\n    },\n    \"text_alignment\": {\n      \"status\": \"PASS\",\n      \"confidence\": 91,\n      \"description\": \"Text is properly aligned\",\n      \"severity\": \"none\"\n    }\n  },\n  \"author_name_detected\": null,\n  \"author_name_position\": null,\n  \"title_detected\": null,\n  \"issues_summary\": [],\n  \"correction_instructions\": []\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        992,
+        112
+      ],
+      "id": "59bee950-c43b-45af-a279-70a45bb7f051",
+      "name": "Structured Output Parser",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.first().json;\nconst prevData = $('Extract ISBN & Metadata').first().json;\n\n// Response is already a parsed object — access directly\nconst analysis = input.output || input;\n\nconst checks = analysis.checks || {};\n\n// Count issues\nconst checkEntries = Object.entries(checks);\nconst failedChecks = checkEntries.filter(([k, v]) => v.status === 'FAIL');\nconst criticalIssues = failedChecks.filter(([k, v]) => v.severity === 'critical');\nconst minorIssues = failedChecks.filter(([k, v]) => v.severity === 'minor');\n\n// Build issue markers for email\nconst issueMarkers = failedChecks.map(([key, val]) => {\n  const icon = val.severity === 'critical' ? '❌' : '⚠️';\n  return `${icon} ${key.replace(/_/g, ' ').toUpperCase()}: ${val.description}`;\n});\n\n// Build pass markers\nconst passMarkers = checkEntries\n  .filter(([k, v]) => v.status === 'PASS')\n  .map(([key, val]) => `✅ ${key.replace(/_/g, ' ').toUpperCase()}: ${val.description}`);\n\nreturn [{\n  json: {\n    isbn: prevData.isbn,\n    fileName: prevData.fileName,\n    uploadTimestamp: prevData.uploadTimestamp,\n    overall_status: analysis.overall_status || 'REVIEW_NEEDED',\n    overall_confidence: analysis.overall_confidence || 0,\n    author_name: analysis.author_name_detected || 'Unknown',\n    author_position: analysis.author_name_position || 'Unknown',\n    book_title: analysis.title_detected || 'Unknown',\n    total_issues: failedChecks.length,\n    critical_issues: criticalIssues.length,\n    minor_issues: minorIssues.length,\n    badge_overlap_status: checks.badge_overlap?.status || 'UNKNOWN',\n    badge_overlap_confidence: checks.badge_overlap?.confidence || 0,\n    safe_margin_status: checks.safe_margin?.status || 'UNKNOWN',\n    text_legibility_status: checks.text_legibility?.status || 'UNKNOWN',\n    image_quality_status: checks.image_quality?.status || 'UNKNOWN',\n    text_alignment_status: checks.text_alignment?.status || 'UNKNOWN',\n    issues_summary: (analysis.issues_summary || []).join(', '),\n    correction_instructions: (analysis.correction_instructions || []).join('\\n'),\n    issue_markers: issueMarkers.join('\\n'),\n    pass_markers: passMarkers.join('\\n'),\n    all_checks_detail: JSON.stringify(checks)\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1040,
+        -144
+      ],
+      "id": "a6cbc681-fb18-4847-a913-ab389b187a4d",
+      "name": "Parse Vision Response"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appaANToZLVOdTjYs",
+          "mode": "list",
+          "cachedResultName": "BookLeaf Cover Validation",
+          "cachedResultUrl": "https://airtable.com/appaANToZLVOdTjYs"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbleB2JTBZWAsH4me",
+          "mode": "list",
+          "cachedResultName": "Author Directory",
+          "cachedResultUrl": "https://airtable.com/appaANToZLVOdTjYs/tbleB2JTBZWAsH4me"
+        },
+        "filterByFormula": "={ISBN} = '{{ $json.isbn }}'",
+        "returnAll": false,
+        "options": {},
+        "sort": {
+          "property": []
+        }
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        1264,
+        -144
+      ],
+      "id": "8c098aec-0eb1-46d1-af9e-7f074c6a213c",
+      "name": "Lookup Author Email",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "H2Ppx9NetnLNeGSr",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appaANToZLVOdTjYs",
+          "mode": "list",
+          "cachedResultName": "BookLeaf Cover Validation",
+          "cachedResultUrl": "https://airtable.com/appaANToZLVOdTjYs"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbl3g7TPClbbP3Ob6",
+          "mode": "list",
+          "cachedResultName": "Cover Reviews",
+          "cachedResultUrl": "https://airtable.com/appaANToZLVOdTjYs/tbl3g7TPClbbP3Ob6"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Confidence Score": "={{ $('Parse Vision Response').first().json.overall_confidence }}",
+            "Badge Overlap Confidence": "={{ $('Parse Vision Response').first().json.badge_overlap_confidence }}",
+            "Critical Issues": "={{ $('Parse Vision Response').first().json.critical_issues }}",
+            "Minor Issues": "={{ $('Parse Vision Response').first().json.minor_issues }}",
+            "ISBN": "={{ $('Parse Vision Response').first().json.isbn }}",
+            "Author Name": "={{ $('Parse Vision Response').first().json.author_name }}",
+            "Badge Overlap": "={{ $('Parse Vision Response').first().json.badge_overlap_status }}",
+            "Safe Margins": "={{ $('Parse Vision Response').first().json.safe_margin_status }}",
+            "Text Legibility": "={{ $('Parse Vision Response').first().json.text_legibility_status }}",
+            "Image Quality": "={{ $('Parse Vision Response').first().json.image_quality_status }}",
+            "Issues Summary": "={{ $('Parse Vision Response').first().json.issues_summary }}",
+            "Correction Instructions": "={{ $('Parse Vision Response').item.json.correction_instructions }}",
+            "File Name": "={{ $('Parse Vision Response').item.json.fileName }}",
+            "Status": "={{ $('Parse Vision Response').first().json.overall_status }}",
+            "Book Title": "={{ $('Parse Vision Response').first().json.book_title }}",
+            "Upload Date": "={{ $('Parse Vision Response').first().json.uploadTimestamp }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "ISBN",
+              "displayName": "ISBN",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Book Title",
+              "displayName": "Book Title",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Author Name",
+              "displayName": "Author Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "PASS",
+                  "value": "PASS"
+                },
+                {
+                  "name": "REVIEW_NEEDED",
+                  "value": "REVIEW_NEEDED"
+                },
+                {
+                  "name": "Approved",
+                  "value": "Approved"
+                },
+                {
+                  "name": "Needs Correction",
+                  "value": "Needs Correction"
+                },
+                {
+                  "name": "Rejected",
+                  "value": "Rejected"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Confidence Score",
+              "displayName": "Confidence Score",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Badge Overlap",
+              "displayName": "Badge Overlap",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "PASS",
+                  "value": "PASS"
+                },
+                {
+                  "name": "FAIL",
+                  "value": "FAIL"
+                },
+                {
+                  "name": "None",
+                  "value": "None"
+                },
+                {
+                  "name": "Partial",
+                  "value": "Partial"
+                },
+                {
+                  "name": "Full",
+                  "value": "Full"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Badge Overlap Confidence",
+              "displayName": "Badge Overlap Confidence",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Safe Margins",
+              "displayName": "Safe Margins",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "PASS",
+                  "value": "PASS"
+                },
+                {
+                  "name": "FAIL",
+                  "value": "FAIL"
+                },
+                {
+                  "name": "Yes",
+                  "value": "Yes"
+                },
+                {
+                  "name": "No",
+                  "value": "No"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Text Legibility",
+              "displayName": "Text Legibility",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "PASS",
+                  "value": "PASS"
+                },
+                {
+                  "name": "FAIL",
+                  "value": "FAIL"
+                },
+                {
+                  "name": "Excellent",
+                  "value": "Excellent"
+                },
+                {
+                  "name": "Good",
+                  "value": "Good"
+                },
+                {
+                  "name": "Poor",
+                  "value": "Poor"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Image Quality",
+              "displayName": "Image Quality",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "PASS",
+                  "value": "PASS"
+                },
+                {
+                  "name": "FAIL",
+                  "value": "FAIL"
+                },
+                {
+                  "name": "High",
+                  "value": "High"
+                },
+                {
+                  "name": "Medium",
+                  "value": "Medium"
+                },
+                {
+                  "name": "Low",
+                  "value": "Low"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Critical Issues",
+              "displayName": "Critical Issues",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Minor Issues",
+              "displayName": "Minor Issues",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Issues Summary",
+              "displayName": "Issues Summary",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Correction Instructions",
+              "displayName": "Correction Instructions",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "File Name",
+              "displayName": "File Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Upload Date",
+              "displayName": "Upload Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Review Date",
+              "displayName": "Review Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        1472,
+        -144
+      ],
+      "id": "f0a85b6a-8b5e-4957-8677-4c98301eeeec",
+      "name": "Create Validation Record",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "H2Ppx9NetnLNeGSr",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "ebb6e473-c1b3-42db-ba4a-3cf25c970a50",
+              "leftValue": "={{ $('Parse Vision Response').first().json.overall_status }}",
+              "rightValue": "PASS",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {
+          "ignoreCase": true
+        }
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1680,
+        -144
+      ],
+      "id": "c9784fce-7c32-4a67-9457-234925dbf63b",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -448,
+        -144
+      ],
+      "id": "68ecbd49-9726-4add-acca-7a92ad855f15",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "amount": 20
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -64,
+        144
+      ],
+      "id": "8e66625a-8fd2-4637-bafa-cabd188b633a",
+      "name": "Wait",
+      "webhookId": "8f83e665-7582-406c-a35f-b6c88089d75a"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.converthub.com/v2/convert",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer 346|GfIRS89uFMwANH4MuRRBK0XEQkXuQHzQmFnRpNkN39259ae3"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target_format",
+              "value": "png"
+            },
+            {
+              "name": "output_filename",
+              "value": "={{ $('Loop Over Items').item.json.name.slice(0, -4)}}"
+            },
+            {
+              "name": "options[quality]",
+              "value": "85"
+            },
+            {
+              "name": "metadata[project_id]",
+              "value": "proj_123"
+            },
+            {
+              "parameterType": "formBinaryData",
+              "name": "file",
+              "inputDataFieldName": "data"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -208,
+        144
+      ],
+      "id": "bd5c718a-b54f-426a-8505-904d3bfaa789",
+      "name": "Submit a conversion job"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.converthub.com/v2/jobs/{{ $json.job_id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer 346|GfIRS89uFMwANH4MuRRBK0XEQkXuQHzQmFnRpNkN39259ae3"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        96,
+        144
+      ],
+      "id": "9ec891ee-84e1-4f58-ad66-f90ea7c531ed",
+      "name": "Get job status"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.result.download_url }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        256,
+        144
+      ],
+      "id": "3cbfafac-9d84-4847-a6b6-8a98abe22dcd",
+      "name": "Download"
+    },
+    {
+      "parameters": {
+        "content": "PDF -> PNG flow (ConvertHub API)",
+        "height": 256,
+        "width": 704,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -320,
+        32
+      ],
+      "id": "06671e40-b26f-4145-8841-cacee44e5f7f",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "Vision models",
+        "height": 256,
+        "width": 352,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        512,
+        32
+      ],
+      "id": "3e78eeda-6ac2-4c1b-bd96-b27c7347da38",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Loop Over Items').item.json.mimeType }}",
+                    "rightValue": "image/png",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "136551b5-a2e6-45bc-98c4-7cd66493c525"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Image"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "0f4f607f-1048-4b11-aaed-dfb900907cdb",
+                    "leftValue": "={{ $('Loop Over Items').item.json.mimeType }}",
+                    "rightValue": "application/pdf",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "PDF"
+            }
+          ]
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        144,
+        -128
+      ],
+      "id": "2b7677ce-5da3-408d-bc78-2137f7a0fbaf",
+      "name": "PDF or IMAGE"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Drive Trigger": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "PDF or IMAGE",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract ISBN & Metadata": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Parse Vision Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Vision Response": {
+      "main": [
+        [
+          {
+            "node": "Lookup Author Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lookup Author Email": {
+      "main": [
+        [
+          {
+            "node": "Create Validation Record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Validation Record": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "PASS template",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "REVIEW NEEDED template",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Extract ISBN & Metadata",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PASS template": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "REVIEW NEEDED template": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Get job status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Submit a conversion job": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get job status": {
+      "main": [
+        [
+          {
+            "node": "Download",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PDF or IMAGE": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Submit a conversion job",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "55d6e316-8c5a-43ad-9268-3eebc2429df8",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f403bee16e7d46825bf939a4e37c3379537b5538d955550f920b50c4a1a8813f"
+  },
+  "id": "u5GSdBRZ8rJFFMaR",
+  "tags": []
+}
