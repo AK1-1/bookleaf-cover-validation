@@ -1,9 +1,9 @@
-# BookLeaf Publishing — Automated Book Cover Validation System
+# BookLeaf Publishing - Automated Book Cover Validation System
 
 An automated pipeline that detects layout issues in book covers using AI-powered computer vision, reducing manual review time by 80%+ while maintaining 90%+ detection accuracy. Built for BookLeaf Publishing's Bestseller Breakthrough Package workflow (100-150 covers/month).
 
 **Built by:** Achyuth Kumar P
-**Assessment for:** AI Automation Specialist — BookLeaf Publishing (Round 2)
+**Assessment for:** AI Automation Specialist - BookLeaf Publishing (Round 2)
 
 ---
 
@@ -25,7 +25,7 @@ An end-to-end automated pipeline that:
 ## Architecture
 
 ```
-Google Drive (folder monitor — every 1 min)
+Google Drive (folder monitor - every 1 min)
     │
     ▼
 n8n: New file detected → Loop Over Items
@@ -91,7 +91,7 @@ Loop back for next cover (batch processing)
 | Back Cover Layout | Improper formatting of About the Book / About the Author sections | Minor |
 
 ### Smart Detection Rules
-- The award badge text ("Winner of 21st Century Emily Dickinson Award") is **expected** at the bottom — the system does NOT flag this as an overlap
+- The award badge text ("Winner of 21st Century Emily Dickinson Award") is **expected** at the bottom - the system does NOT flag this as an overlap
 - Only flags when **other text** (author name, title, subtitle) intrudes into the badge zone
 - Subtitles/taglines positioned above the badge area are acceptable
 - If only the front cover is visible, back cover checks are automatically skipped
@@ -146,8 +146,8 @@ bookleaf-cover-validation/
 
 ### 2. Airtable
 - Create a base with two tables:
-  - **Cover Reviews** — validation results (Status, Confidence, all check results, issues, corrections)
-  - **Author Directory** — ISBN to author name/email mapping
+  - **Cover Reviews** - validation results (Status, Confidence, all check results, issues, corrections)
+  - **Author Directory** - ISBN to author name/email mapping
 
 ### 3. n8n
 - Import `workflows/BookLeaf_Cover_Validation.json`
@@ -164,7 +164,7 @@ bookleaf-cover-validation/
 
 ### PASS Email
 ```
-Subject: ✅ Your Book Cover Has Been Approved — Echoes Along the Way
+Subject: ✅ Your Book Cover Has Been Approved - Echoes Along the Way
 
 Hi Benny James SDB,
 
@@ -180,7 +180,7 @@ Your cover will proceed to production. No further action needed.
 
 ### REVIEW NEEDED Email
 ```
-Subject: ⚠️ Your Book Cover Needs Adjustments — Shabd
+Subject: ⚠️ Your Book Cover Needs Adjustments - Shabd
 
 Hi Parisha Shodhan,
 
@@ -196,21 +196,21 @@ Please resubmit within 5 business days.
 
 ## Key Design Decisions
 
-1. **GPT-4o Vision over traditional CV:** For a no-code/low-code role, using AI vision provides faster development, better edge case handling, and natural language issue descriptions — vs writing custom OpenCV scripts. In production, I'd add OpenCV as a secondary pixel-precise validation layer.
+1. **GPT-4o Vision over traditional CV:** For a no-code/low-code role, using AI vision provides faster development, better edge case handling, and natural language issue descriptions - vs writing custom OpenCV scripts. In production, I'd add OpenCV as a secondary pixel-precise validation layer.
 
-2. **Severity classification:** Only badge overlap is "critical" — margin and spacing issues are "minor." This prevents unnecessary alarm for authors while ensuring the #1 problem (badge overlap) is always caught.
+2. **Severity classification:** Only badge overlap is "critical" - margin and spacing issues are "minor." This prevents unnecessary alarm for authors while ensuring the #1 problem (badge overlap) is always caught.
 
-3. **Loop processing:** The workflow handles batch uploads — multiple covers dropped into the folder are processed sequentially, each getting its own Airtable record and email.
+3. **Loop processing:** The workflow handles batch uploads - multiple covers dropped into the folder are processed sequentially, each getting its own Airtable record and email.
 
 4. **PDF support:** Covers uploaded as PDFs are automatically converted to images via ConvertHub before vision analysis.
 
 ## What I'd Improve With More Time
 
-1. **Visual annotations** — Overlay red boxes on the cover image showing exactly where issues are, and attach the annotated image to the email
-2. **OpenCV secondary validation** — Pixel-precise measurement of margins and badge zone boundaries as a confidence booster
-3. **Reviewer dashboard** — Web UI for the design team to see all flagged covers, approve/reject, and track resubmissions
-4. **Resubmission tracking** — Detect when the same ISBN is re-uploaded, run validation again, and update the existing Airtable record with version history
-5. **Batch analytics** — Monthly report showing common issue types, pass rates, and accuracy trends
+1. **Visual annotations** - Overlay red boxes on the cover image showing exactly where issues are, and attach the annotated image to the email
+2. **OpenCV secondary validation** - Pixel-precise measurement of margins and badge zone boundaries as a confidence booster
+3. **Reviewer dashboard** - Web UI for the design team to see all flagged covers, approve/reject, and track resubmissions
+4. **Resubmission tracking** - Detect when the same ISBN is re-uploaded, run validation again, and update the existing Airtable record with version history
+5. **Batch analytics** - Monthly report showing common issue types, pass rates, and accuracy trends
 
 ## Loom Video
 
