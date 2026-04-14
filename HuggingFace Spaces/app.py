@@ -2,6 +2,7 @@ import gradio as gr
 import google.generativeai as genai
 import json
 import os
+import time
 
 genai.configure(api_key=os.environ.get("GOOGLE_API_KEY"))
 model = genai.GenerativeModel("gemini-2.5-pro")
@@ -120,15 +121,28 @@ IMPORTANT:
 - The cover image may show front cover only, or front + back + spine together. Analyze whatever is visible."""
 
 
-def analyze_cover(image):
-    if image is None:
-        return "Please upload a book cover image.", "", ""
+def analyze_cover(image, pdf_file):
+    if image is None and pdf_file is None:
+        return "Please upload a book cover image or PDF.", "", ""
 
     try:
+        # Determine input type — prioritize PDF if both provided
+        if pdf_file is not None:
+            uploaded_file = genai.upload_file(pdf_file, mime_type="application/pdf")
+            # Wait for file processing
+            while uploaded_file.state.name == "PROCESSING":
+                time.sleep(1)
+                uploaded_file = genai.get_file(uploaded_file.name)
+            if uploaded_file.state.name == "FAILED":
+                return "Error: PDF processing failed. Please try again.", "", ""
+            media_input = uploaded_file
+        else:
+            media_input = image
+
         response = model.generate_content(
             [
                 SYSTEM_PROMPT,
-                image,
+                media_input,
                 "Analyze this book cover for layout issues. Check all requirements carefully, especially the award badge overlap zone at the bottom. Respond ONLY with the JSON object, no markdown or code blocks.",
             ],
             generation_config=genai.types.GenerationConfig(
@@ -210,7 +224,7 @@ with gr.Blocks(
         """
     # 📚 BookLeaf — Book Cover Validation System
     
-    Upload a book cover image to automatically check for layout issues, badge overlap violations, margin compliance, and quality standards.
+    Upload a book cover **image or PDF** to automatically check for layout issues, badge overlap violations, margin compliance, and quality standards.
     
     **How it works:** The system uses AI Vision to analyze the cover against BookLeaf's publishing specifications, with special focus on the "21st Century Emily Dickinson Award" badge placement zone.
     
@@ -220,18 +234,27 @@ with gr.Blocks(
 
     with gr.Row():
         with gr.Column(scale=1):
-            image_input = gr.Image(
-                label="Upload Book Cover",
-                type="pil",
-                height=500,
-            )
+            with gr.Tabs():
+                with gr.TabItem("📷 Image Upload"):
+                    image_input = gr.Image(
+                        label="Upload Book Cover Image",
+                        type="pil",
+                        height=400,
+                    )
+                with gr.TabItem("📄 PDF Upload"):
+                    pdf_input = gr.File(
+                        label="Upload Book Cover PDF",
+                        file_types=[".pdf"],
+                        type="filepath",
+                    )
+
             analyze_btn = gr.Button(
                 "🔍 Analyze Cover", variant="primary", size="lg"
             )
 
             gr.Markdown(
                 """
-            **Supported formats:** PNG, JPG
+            **Supported formats:** PNG, JPG, PDF
             
             **What we check:**
             - ❌ Badge overlap (critical)
@@ -249,7 +272,7 @@ with gr.Blocks(
 
     analyze_btn.click(
         fn=analyze_cover,
-        inputs=[image_input],
+        inputs=[image_input, pdf_input],
         outputs=[status_output, checks_output, details_output],
     )
 
