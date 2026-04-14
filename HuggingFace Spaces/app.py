@@ -12,10 +12,12 @@ COVER LAYOUT REFERENCE:
 The cover has TWO sides — Front Cover (right side) and Back Cover (left side), with a thin spine in the middle.
 
 FRONT COVER SAFE AREA RULES:
-- There is a safe area inset approximately 3mm (printed) from the LEFT, RIGHT, and TOP edges. Visually, in a standard full-cover image, these safe-area guide lines appear roughly 5–7% inset from each edge of the front cover panel.
-- IMPORTANT CALIBRATION: A safe margin VIOLATION only occurs when text crosses OUTSIDE these guide lines — i.e., when text is within the outermost 5% strip along any edge. Text that sits just inside or well inside these lines is NOT a violation, even if it appears near the top or sides of the cover.
-- The AUTHOR NAME is commonly placed at the TOP of the front cover, just inside the top safe-area line. This is an ACCEPTED layout — do NOT flag author name at the top as a margin violation unless it literally touches or bleeds off the top edge.
-- The book title is typically placed in the upper, middle, or lower portion of the front cover, but must stay within the safe area and ABOVE the bottom badge zone.
+- There is a safe area inset approximately 3mm (printed) from the LEFT, RIGHT, and TOP edges of the front cover panel.
+- VISUAL TEST for safe margin: Look at the gap between any text and the nearest edge. If the gap is very narrow — roughly the height of one line of small text or less — that is a margin violation. There should be a clearly visible, comfortable gap between all text and every edge.
+- EXCEPTION — AUTHOR NAME ONLY: The author name is commonly placed near the top of the front cover. If the author name has a small but visible gap from the top edge, this is ACCEPTED. This exception does NOT apply to the book title or any other text.
+- TITLE TEXT NEAR EDGES IS A VIOLATION: If the book title, subtitle, or any large display text starts very close to the top edge, or runs very close to the right or left edge of the front cover, this IS a safe margin violation (severity "minor"). 
+  Example: A title like "Offline Sorrows" placed at the very top of the front cover with barely any gap, or words like "Online Ghosts" extending to near the right edge — these are violations because the title text has insufficient margin from the edge.
+- The book title should ideally be placed with comfortable margins from the top, left, and right edges of the front cover panel.
 - The BOTTOM approximately 9–10mm (roughly the bottom 8–10% of the front cover height) is RESERVED for the "Winner of 21st Century Emily Dickinson Award" badge strip. NO other text, author name, title, or design element should appear in this strip.
 
 BACK COVER RULES:
@@ -42,12 +44,12 @@ SEVERITY RULES:
 Do NOT mark safe margin or text spacing issues as "critical". These are "minor" issues that need review but are not showstoppers.
 
 ADDITIONAL CHECKS:
-2. SAFE MARGIN VIOLATIONS: Check each edge of the FRONT COVER PANEL independently (not the full spread image):
-   - TOP edge: Does any text start within the top 5% of the front cover panel height? (e.g. title touching or very close to the top edge)
-   - RIGHT edge: Does any text extend into the rightmost 5% of the front cover panel width? (e.g. title words running close to or off the right edge)
-   - LEFT edge: Does any text start within the leftmost 5% of the front cover panel width?
-   Note: The full cover image is a wide spread (back + spine + front). The front cover panel is roughly the right half. Measure 5% relative to the FRONT COVER PANEL size, not the full image width.
-   The author name near the top is acceptable — but the TITLE running close to the top or right edge IS a violation. Flag confidently if text clearly encroaches into the 5% border strip.
+2. SAFE MARGIN VIOLATIONS: Examine the FRONT COVER PANEL (not the full spread) and check each edge:
+   - TOP edge: Is the book TITLE (not author name) positioned so close to the top edge that the gap is less than one line of small text? If yes, FAIL.
+   - RIGHT edge: Does any title text extend so close to the right edge that the gap is very narrow (less than a character width)? If yes, FAIL.
+   - LEFT edge: Same check for the left edge.
+   REMEMBER: The full image shows back cover + spine + front cover. The front cover is the RIGHT HALF of the image. Check margins relative to the front cover panel edges, not the full image.
+   IMPORTANT: The author name near the top edge gets a pass, but title text near ANY edge does NOT. Title text too close to the top or right edge is a genuine violation even with a tiny gap.
 3. TEXT-TO-BORDER SPACING: On the back cover, does any text literally touch or bleed off the physical edge of the image? Text that is near the top but has any visible gap between it and the edge is NOT a violation. Apply the same 5% outer-strip rule as the front cover — only flag if text is within that outermost strip.
 4. TEXT LEGIBILITY: Is all text clearly readable with no pixelation or blur?
 5. IMAGE QUALITY: Is the overall image clear, high-resolution, and professional?
