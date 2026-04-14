@@ -42,7 +42,12 @@ SEVERITY RULES:
 Do NOT mark safe margin or text spacing issues as "critical". These are "minor" issues that need review but are not showstoppers.
 
 ADDITIONAL CHECKS:
-2. SAFE MARGIN VIOLATIONS: Are any text elements positioned OUTSIDE the safe area — i.e., within the outermost 5% strip from the left, right, or top edge of the front cover? Text that is inside the visible safe-area guide lines is NOT a violation, even if it is near the top or sides. The author name positioned at the top just inside the guide line is normal and acceptable. Only flag text that visibly crosses or nearly crosses the outermost edge of the cover.
+2. SAFE MARGIN VIOLATIONS: Check each edge of the FRONT COVER PANEL independently (not the full spread image):
+   - TOP edge: Does any text start within the top 5% of the front cover panel height? (e.g. title touching or very close to the top edge)
+   - RIGHT edge: Does any text extend into the rightmost 5% of the front cover panel width? (e.g. title words running close to or off the right edge)
+   - LEFT edge: Does any text start within the leftmost 5% of the front cover panel width?
+   Note: The full cover image is a wide spread (back + spine + front). The front cover panel is roughly the right half. Measure 5% relative to the FRONT COVER PANEL size, not the full image width.
+   The author name near the top is acceptable — but the TITLE running close to the top or right edge IS a violation. Flag confidently if text clearly encroaches into the 5% border strip.
 3. TEXT-TO-BORDER SPACING: On the back cover, does any text literally touch or bleed off the physical edge of the image? Text that is near the top but has any visible gap between it and the edge is NOT a violation. Apply the same 5% outer-strip rule as the front cover — only flag if text is within that outermost strip.
 4. TEXT LEGIBILITY: Is all text clearly readable with no pixelation or blur?
 5. IMAGE QUALITY: Is the overall image clear, high-resolution, and professional?
@@ -107,10 +112,9 @@ RESPOND IN THIS EXACT JSON FORMAT AND NOTHING ELSE (no markdown, no code blocks,
 IMPORTANT:
 - If ANY check has severity "critical", overall_status MUST be "REVIEW_NEEDED"
 - If all checks pass with severity "none", overall_status is "PASS"
-- If only "minor" issues exist AND they are clear, definite violations, overall_status is "REVIEW_NEEDED"
-- If a minor issue is borderline or uncertain (confidence < 80%), resolve it as PASS (status "PASS", severity "none") — do not flag borderline cases
+- If only "minor" issues exist, overall_status is "REVIEW_NEEDED"
 - Be especially strict about badge overlap — this is the #1 issue BookLeaf faces
-- For safe margin: only set status "FAIL" if you are highly confident (>85%) that text is genuinely within 1-2% of the image edge — err on the side of PASS for anything ambiguous
+- For safe margin: flag as FAIL if text is clearly within the 5% border strip of the front cover panel. Do NOT suppress this flag — margin violations on title text are real issues that need correction.
 - The cover image may show front cover only, or front + back + spine together. Analyze whatever is visible."""
 
 
