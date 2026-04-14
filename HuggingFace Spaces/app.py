@@ -12,10 +12,12 @@ COVER LAYOUT REFERENCE:
 The cover has TWO sides — Front Cover (right side) and Back Cover (left side), with a thin spine in the middle.
 
 FRONT COVER SAFE AREA RULES:
-- There must be a clear margin of approximately 3mm from the LEFT, RIGHT, and TOP edges. No text or important elements should touch or be very close to these edges.
+- There must be a clear margin of approximately 3mm from the LEFT, RIGHT, and TOP edges. No text or important elements should TOUCH or be EXTREMELY close to these edges.
+- IMPORTANT CALIBRATION: In a typical full-cover image (front + back + spine), 3mm represents roughly the top 1–2% of image height. Text that starts 5% or more from the top edge is well within the safe zone — do NOT flag it. Only flag text that is visually almost touching or overlapping the very edge of the image.
 - The BOTTOM approximately 9mm (roughly the bottom 4-5% of the cover height) is RESERVED for the "Winner of 21st Century Emily Dickinson Award" badge. NO text, author name, title, or any design element should appear in this bottom strip.
-- The author name is typically placed at the top of the front cover, well within the safe area.
-- The book title can be placed in the middle or lower portion, but must stay ABOVE the bottom badge zone.
+- The author name is typically placed in the middle of the front cover, well within the safe area.
+- The book title can be placed in the upper or middle portion, but must stay ABOVE the bottom badge zone.
+- Titles placed in the upper quarter of the front cover are acceptable as long as they do not visually touch or nearly touch the top edge.
 
 BACK COVER RULES:
 - Should have proper margins on all sides
@@ -40,7 +42,7 @@ SEVERITY RULES:
 Do NOT mark safe margin or text spacing issues as "critical". These are "minor" issues that need review but are not showstoppers.
 
 ADDITIONAL CHECKS:
-2. SAFE MARGIN VIOLATIONS: Is any text within ~3mm of the left, right, or top edges of the front cover?
+2. SAFE MARGIN VIOLATIONS: Is any text VISUALLY TOUCHING or NEARLY TOUCHING (within roughly the top/left/right 1-2% of image dimensions) the edges of the front cover? Text that simply starts in the upper portion of the cover but has visible white space or background between it and the edge is NOT a violation. Be lenient — only flag genuine edge violations, not text that is merely high on the page.
 3. TEXT-TO-BORDER SPACING: On the back cover, is text too close to any edge?
 4. TEXT LEGIBILITY: Is all text clearly readable with no pixelation or blur?
 5. IMAGE QUALITY: Is the overall image clear, high-resolution, and professional?
@@ -105,8 +107,10 @@ RESPOND IN THIS EXACT JSON FORMAT AND NOTHING ELSE (no markdown, no code blocks,
 IMPORTANT:
 - If ANY check has severity "critical", overall_status MUST be "REVIEW_NEEDED"
 - If all checks pass with severity "none", overall_status is "PASS"
-- If only "minor" issues exist, overall_status is "REVIEW_NEEDED" but note they are minor
+- If only "minor" issues exist AND they are clear, definite violations, overall_status is "REVIEW_NEEDED"
+- If a minor issue is borderline or uncertain (confidence < 80%), resolve it as PASS (status "PASS", severity "none") — do not flag borderline cases
 - Be especially strict about badge overlap — this is the #1 issue BookLeaf faces
+- For safe margin: only set status "FAIL" if you are highly confident (>85%) that text is genuinely within 1-2% of the image edge — err on the side of PASS for anything ambiguous
 - The cover image may show front cover only, or front + back + spine together. Analyze whatever is visible."""
 
 
