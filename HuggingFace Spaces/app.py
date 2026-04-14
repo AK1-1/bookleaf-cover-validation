@@ -19,10 +19,11 @@ FRONT COVER SAFE AREA RULES:
 - The BOTTOM approximately 9–10mm (roughly the bottom 8–10% of the front cover height) is RESERVED for the "Winner of 21st Century Emily Dickinson Award" badge strip. NO other text, author name, title, or design element should appear in this strip.
 
 BACK COVER RULES:
-- Should have proper margins on all sides
-- "About the Book" text at the top should not touch the top edge
-- "About the Author" section should be properly spaced
-- BookLeaf Publishing logo typically appears at the bottom left
+- The back cover follows the same safe-area guide lines as the front — text must stay within the outermost 5% border on all sides.
+- ACCEPTED LAYOUT: The "About the Book" body text commonly starts near the top of the back cover, just inside the safe-area guide line. This is NORMAL for BookLeaf covers — do NOT flag it unless the text literally touches or bleeds off the top edge of the image.
+- "About the Author" section should be properly spaced from surrounding elements.
+- BookLeaf Publishing logo typically appears at the bottom left, barcode at the bottom right.
+- Only flag a back cover margin issue if text clearly falls within the outermost 5% strip (i.e., visually touching or extremely close to the physical edge).
 
 CRITICAL CHECK (highest priority):
 1. BADGE OVERLAP: Look at the very bottom strip of the FRONT COVER. 
@@ -42,11 +43,11 @@ Do NOT mark safe margin or text spacing issues as "critical". These are "minor" 
 
 ADDITIONAL CHECKS:
 2. SAFE MARGIN VIOLATIONS: Are any text elements positioned OUTSIDE the safe area — i.e., within the outermost 5% strip from the left, right, or top edge of the front cover? Text that is inside the visible safe-area guide lines is NOT a violation, even if it is near the top or sides. The author name positioned at the top just inside the guide line is normal and acceptable. Only flag text that visibly crosses or nearly crosses the outermost edge of the cover.
-3. TEXT-TO-BORDER SPACING: On the back cover, is text too close to any edge?
+3. TEXT-TO-BORDER SPACING: On the back cover, does any text literally touch or bleed off the physical edge of the image? Text that is near the top but has any visible gap between it and the edge is NOT a violation. Apply the same 5% outer-strip rule as the front cover — only flag if text is within that outermost strip.
 4. TEXT LEGIBILITY: Is all text clearly readable with no pixelation or blur?
 5. IMAGE QUALITY: Is the overall image clear, high-resolution, and professional?
 6. TEXT ALIGNMENT: Is text properly aligned and not crooked or misaligned?
-7. BACK COVER LAYOUT: Is the back cover text (About the Book, About the Author) properly formatted and within margins?
+7. BACK COVER LAYOUT: Is the back cover text (About the Book/About the Author) properly formatted? Only flag layout issues if text is outside the safe area guide lines (outermost 5% strip) or sections are missing entirely. Text starting near the top of the back cover within the safe area is an accepted BookLeaf layout — do NOT flag it.
 
 RESPOND IN THIS EXACT JSON FORMAT AND NOTHING ELSE (no markdown, no code blocks, just raw JSON):
 {
