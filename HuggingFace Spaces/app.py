@@ -12,12 +12,11 @@ COVER LAYOUT REFERENCE:
 The cover has TWO sides — Front Cover (right side) and Back Cover (left side), with a thin spine in the middle.
 
 FRONT COVER SAFE AREA RULES:
-- There must be a clear margin of approximately 3mm from the LEFT, RIGHT, and TOP edges. No text or important elements should TOUCH or be EXTREMELY close to these edges.
-- IMPORTANT CALIBRATION: In a typical full-cover image (front + back + spine), 3mm represents roughly the top 1–2% of image height. Text that starts 5% or more from the top edge is well within the safe zone — do NOT flag it. Only flag text that is visually almost touching or overlapping the very edge of the image.
-- The BOTTOM approximately 9mm (roughly the bottom 4-5% of the cover height) is RESERVED for the "Winner of 21st Century Emily Dickinson Award" badge. NO text, author name, title, or any design element should appear in this bottom strip.
-- The author name is typically placed in the middle of the front cover, well within the safe area.
-- The book title can be placed in the upper or middle portion, but must stay ABOVE the bottom badge zone.
-- Titles placed in the upper quarter of the front cover are acceptable as long as they do not visually touch or nearly touch the top edge.
+- There is a safe area inset approximately 3mm (printed) from the LEFT, RIGHT, and TOP edges. Visually, in a standard full-cover image, these safe-area guide lines appear roughly 5–7% inset from each edge of the front cover panel.
+- IMPORTANT CALIBRATION: A safe margin VIOLATION only occurs when text crosses OUTSIDE these guide lines — i.e., when text is within the outermost 5% strip along any edge. Text that sits just inside or well inside these lines is NOT a violation, even if it appears near the top or sides of the cover.
+- The AUTHOR NAME is commonly placed at the TOP of the front cover, just inside the top safe-area line. This is an ACCEPTED layout — do NOT flag author name at the top as a margin violation unless it literally touches or bleeds off the top edge.
+- The book title is typically placed in the upper, middle, or lower portion of the front cover, but must stay within the safe area and ABOVE the bottom badge zone.
+- The BOTTOM approximately 9–10mm (roughly the bottom 8–10% of the front cover height) is RESERVED for the "Winner of 21st Century Emily Dickinson Award" badge strip. NO other text, author name, title, or design element should appear in this strip.
 
 BACK COVER RULES:
 - Should have proper margins on all sides
@@ -42,7 +41,7 @@ SEVERITY RULES:
 Do NOT mark safe margin or text spacing issues as "critical". These are "minor" issues that need review but are not showstoppers.
 
 ADDITIONAL CHECKS:
-2. SAFE MARGIN VIOLATIONS: Is any text VISUALLY TOUCHING or NEARLY TOUCHING (within roughly the top/left/right 1-2% of image dimensions) the edges of the front cover? Text that simply starts in the upper portion of the cover but has visible white space or background between it and the edge is NOT a violation. Be lenient — only flag genuine edge violations, not text that is merely high on the page.
+2. SAFE MARGIN VIOLATIONS: Are any text elements positioned OUTSIDE the safe area — i.e., within the outermost 5% strip from the left, right, or top edge of the front cover? Text that is inside the visible safe-area guide lines is NOT a violation, even if it is near the top or sides. The author name positioned at the top just inside the guide line is normal and acceptable. Only flag text that visibly crosses or nearly crosses the outermost edge of the cover.
 3. TEXT-TO-BORDER SPACING: On the back cover, is text too close to any edge?
 4. TEXT LEGIBILITY: Is all text clearly readable with no pixelation or blur?
 5. IMAGE QUALITY: Is the overall image clear, high-resolution, and professional?
